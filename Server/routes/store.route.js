@@ -6,10 +6,12 @@ const storeRouter = express.Router();
 const {auth} = require('../auth/auth.middleware');
 
 
-storeRouter.get("/getStoreBalance",async(req,res)=>{
+storeRouter.post("/getStoreBalance",async(req,res)=>{
     try{
         const {userId}= req.body;
-        let store =await IBSstore.find({userId:userId});
+        console.log("USER IN STORE", req.body);
+        let store =await IBSstore.findOne({userId:userId});
+        console.log("STORE IS", store);
         if(!store){
              res.status(404).json({message:"No Store Availble"});
         }

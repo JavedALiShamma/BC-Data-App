@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit mobile number']
   },
-  payed:{
+  totalMonthlypayment:{
     type:Number,
     default:0
   },
@@ -63,10 +63,11 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  borrowedAmount: {
+  loanAmountTaken:{
     type: Number,
     default: 0,
   },
+ 
   borrowedMonth: {
     type: String, // e.g., "May 2025"
   },

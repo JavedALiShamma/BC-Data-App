@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   illustrationImage: {
-    width: width * 0.20,
-    height: width * 0.20,
-    margin:"auto",
+    width: width * 0.30,
+    height: width * 0.35,
+   
     marginTop:0
    
   },

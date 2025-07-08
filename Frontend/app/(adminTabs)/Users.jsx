@@ -40,18 +40,19 @@ const UserManagementScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.totalAmount}>Total Collected: ₹ {totalCollected}</Text>
+        <Text style={styles.totalAmount}>नया यूजर जोड़ें</Text>
+        <Text style={{color:"grey"}}>यहां आप नए यूजर को जोड़ सकते हैं जो इस योजना में रूचि रखते हैं</Text>
         <TouchableOpacity style={styles.addButton} onPress={handleAddUser}>
           <Text style={styles.addText}>+ नया यूजर जोड़ें</Text>
         </TouchableOpacity>
       </View>
 
-      <FlatList
+      {/* <FlatList
         data={users}
         keyExtractor={(item) => item.id}
         renderItem={renderUserItem}
         contentContainerStyle={{ paddingBottom: 20 }}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform,ImageBackground } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Link, useNavigation} from "expo-router"
 import styles from "../../assets/styles/login.styles";
 import {Image} from "react-native"
@@ -10,15 +10,27 @@ import axios from 'axios';
 import useAuthStore from '../../store/UserAuth';
 import ToastManager, { Toast } from 'toastify-react-native'
 import { APIURl } from '../../constants/Api';
+// import useAuthStore from '../../store/UserAuth';
 function Login() {
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [isLoading,setIsLoading]=useState(false);
   const [isError,setError]=useState(null);
-  
+  const user = useAuthStore((state) => state.user);
   const router = useRouter();
   const navigation =useNavigation();
+  useEffect(()=>{
+
+    if(user){
+      if(user.role === 'superadmin'){
+            navigation.navigate("(tabs)")
+           }
+           else{
+             navigation.navigate("(adminTabs)");
+           }
+    }
+  },[])
   const handleLogin=async ()=>{
     // I want to send it to the (tabs) page
  
@@ -74,14 +86,14 @@ function Login() {
     <View style={styles.container}>
     <View style={{width:"100%", height:"45%" ,backgroundColor:"white"}}>
       <ImageBackground
-      source={require("../../assets/images/CCBackground.png")}
+      source={require("../../assets/images/SavingMoney2.png")}
       resizeMode="contain"
       style={{width:"100%", height:"100%", position:"absolute"}}
 
       
       >
           <Image
-        source={require("../../assets/images/cleanCityNoBG.png")}
+        source={require("../../assets/images/Assuffah.png")}
         resizeMode='contain'
         style={styles.illustrationImage}
         

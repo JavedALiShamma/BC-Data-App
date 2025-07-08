@@ -66,7 +66,7 @@
        <Tabs.Screen
       name='Collection'
       options={{
-        title:"Collection",
+        title:"Loan",
         tabBarIcon:(color,size)=>{
           return(
             <Ionicons name='cash-outline' color={COLORSNEW} size={28}/>

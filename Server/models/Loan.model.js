@@ -1,6 +1,24 @@
 const mongoose=require('mongoose');
 const IBSuser =require('./user.model');
-
+const MonthlyPaymentSchema = new mongoose.Schema({
+  year: Number,
+  month: {
+    type: String,
+    enum: [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ]
+  },
+  
+  amount: Number,
+  status: {
+    type: String,
+    enum: ["Paid", "Unpaid", "Pending"],
+    default: "Unpaid"
+  },
+  paidOn: Date ,
+  usersPaid:[]
+});
 
 const LoanSchema= new mongoose.Schema({
     userId: 
@@ -19,13 +37,8 @@ const LoanSchema= new mongoose.Schema({
   startYear: Number,
   installmentAmount: Number,
   totalInstallments: Number,
-  installmentsPaid: [
-    {
-      month: String,
-      year: Number,
-      paid: Boolean,
-    }
-  ],
+  loanAmountLeft:Number,
+  installmentsPaid: [MonthlyPaymentSchema],
   isCompleted: Boolean,
    witness1:{
     type:String,
@@ -35,6 +48,8 @@ const LoanSchema= new mongoose.Schema({
     type:String,
     default:null
   },
+  outstandingBalance:Number,
+  installmentLeft:Number,
 },{
     timestamps:true
 });

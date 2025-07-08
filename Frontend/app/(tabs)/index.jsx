@@ -24,7 +24,7 @@ const SuperAdminHomeScreen = () => {
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
 
-  const superAdminName = `Welcome, ${user.name}`;
+  const superAdminName = `Welcome, ${user?.name}`;
   //// Here will try to fetch the data 
   const totalCollection =()=>{
     let TOTALAMONT=0;
@@ -65,7 +65,7 @@ const SuperAdminHomeScreen = () => {
       }
     }
    },[])
-
+   
   useFocusEffect(
   React.useCallback(() => {
  
@@ -82,6 +82,12 @@ const SuperAdminHomeScreen = () => {
     if(item == "सभी यूजर देखें"){
       navigation.navigate("AllUserList" ,{users:totalUsers});
     }
+    if(item =="लोन लेने के इच्छुक"){
+      navigation.navigate("AllLoaners",{user:totalUsers});
+    }
+    if(item =='सभी मुखियाओं की प्रगति देखें'){
+      navigation.navigate("AllAdminsDetails" , {user:totalAdmins})
+    }
   };
 
 
@@ -96,8 +102,8 @@ const SuperAdminHomeScreen = () => {
   const actionList = [
     "मुखिया बनाये",
     "सभी यूजर देखें",
-    "View Transactions",
-    "Select Beneficiary"
+    "सभी मुखियाओं की प्रगति देखें",
+    "लोन लेने के इच्छुक"
   ];
 
   return (

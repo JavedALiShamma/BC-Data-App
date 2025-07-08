@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import useAuthStore from '../store/UserAuth';
 import { useRoute } from '@react-navigation/native';
 import { APIURl } from '../constants/Api';
 import { Ionicons } from '@expo/vector-icons';
-
+import ToastManager, { Toast } from 'toastify-react-native'
+import { useNavigation } from 'expo-router';
 // const APIURl = 'http://<your-ip>:3000'; // replace with your backend URL
 
 const UserDetailsScreen = () => {
@@ -15,27 +16,34 @@ const UserDetailsScreen = () => {
 
   const token = useAuthStore((state) => state.token);
   const admin= useAuthStore((state)=>state.user);
-
+  
+  //
+  const navigation =useNavigation();
   const IBSSuperAdmin=admin.IBSSuperAdmin;
   const [user, setUser] = useState(passedUser);
   const [isAppliedLoan, setIsAppliedLoan] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
  
     if (!user) return <Text>Loading user data...</Text>;
   const payment = user.payments.find(p => p.month === currentMonth && p.year === currentYear);
   const paymentStatus = payment?.status || 'Unpaid';
-
-  const updateCurrentMonthStatus = async () => {
-    try {
+  const handleBack =()=>{
+    console.log("backi is presed");
+    navigation.goBack();
+  }
+  const updateCurrentMonthStatus =  () => {
+    const ApiCall =async()=>{
+    setIsLoading(true);
+      try {
       const res = await axios.put(
-        `${APIURl}/updateUserPayment/${passedUser._id}`,
+        `${APIURl}/updateMonthlyFees/${passedUser._id}`,
         {
           month: currentMonth,
           year: currentYear,
           status: 'Paid',
-          amount:200,
+          // AMOUNT IS REMOVED FROM HERE
           isAppliedLoan:isAppliedLoan,
           superAdmin:IBSSuperAdmin
         },
@@ -47,15 +55,19 @@ const UserDetailsScreen = () => {
       ).then(function(res){
         if(res.status==201){
           console.log("Successfully Updated");
-          Alert.alert("Success",`${res.status}`);
+          Toast.success(res.data.message);
         }
         else{
           Alert.alert("Failed", `${res.status}`);
           return;
+          
         }
       }).catch(function(err){
         console.log("error Occured", err);
-        return;
+        Toast.error(`${err}`);
+        return; 
+      }).finally(()=>{
+        setIsLoading(false);
       });
 
       
@@ -74,21 +86,26 @@ const UserDetailsScreen = () => {
             month: currentMonth,
             year: currentYear,
             status: 'Paid',
-            amount: 200,
             paidOn: new Date(),
           }]
         });
       }
     } catch (err) {
       console.error(err);
-      Alert.alert('Error', 'Failed to update payment status.');
+      Toast.error(`${err}`);
     }
+    }
+    ApiCall();
+    
   };
 
   return (
+    <>
+    <ToastManager/>
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>User Details</Text>
-
+      <Ionicons style={{position:"absolute" , top:25 , left:20}} onPress={handleBack} name='arrow-back' size={25}/>
+      
       <View style={styles.infoCard}>
         <Text style={styles.label}>Name:</Text>
         <Text style={styles.value}>{user.name}</Text>
@@ -113,7 +130,7 @@ const UserDetailsScreen = () => {
         </View>
           {paymentStatus !=='Paid' && !isAppliedLoan ? (
         <TouchableOpacity style={styles.applyButton} onPress={() => setIsAppliedLoan(true)}>
-          <Text style={styles.applyText}>Apply for Loan</Text>
+          <Text style={styles.applyText}>लोन के लिए आवेदन करें</Text>
         </TouchableOpacity>
       ) : (
         <View style={styles.actionContainer}>
@@ -126,7 +143,8 @@ const UserDetailsScreen = () => {
         {paymentStatus !== 'Paid' && (
           <>
           <TouchableOpacity style={styles.button} onPress={updateCurrentMonthStatus}>
-            <Text style={styles.buttonText}>Mark as Paid</Text>
+            {isLoading? <ActivityIndicator color="#fff" /> :<Text style={styles.buttonText}>भुगतान प्राप्त हुआ</Text>}
+            
 
           </TouchableOpacity>
          
@@ -135,6 +153,7 @@ const UserDetailsScreen = () => {
       
       </View>
     </ScrollView>
+    </>
   );
 };
 
@@ -149,6 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign:"center"
   },
   infoCard: {
     backgroundColor: '#fff',

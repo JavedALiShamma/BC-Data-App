@@ -24,6 +24,7 @@ const AdminHome = () => {
   const token = useAuthStore((state) => state.token);
   const user = useAuthStore((state) => state.user);
   const navigation = useNavigation();
+  const setAllUsers =useAuthStore((state)=> state.setAllUsers);
 
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
@@ -31,7 +32,7 @@ const AdminHome = () => {
   const fetchUsers = async () => {
     try {
       setRefreshing(true);
-      const res = await axios.get(`${APIURl}/getUsersByAdmin/${user._id}`, {
+      const res = await axios.get(`${APIURl}/getUsersByAdmin/${user?._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +40,7 @@ const AdminHome = () => {
 
       const allUser = res.data.users;
       setUsers(allUser);
-
+      setAllUsers(allUser);
       let paidUserCount = 0;
       let total = 0;
 
@@ -68,7 +69,7 @@ const AdminHome = () => {
   useFocusEffect(
     useCallback(() => {
       fetchUsers();
-    }, [user._id, token])
+    }, [user?._id, token])
   );
 
   const handleSingleUser = (item) => {
@@ -99,7 +100,7 @@ const AdminHome = () => {
 
   const renderUser = ({ item }) => (
     <TouchableOpacity onPress={() => handleSingleUser(item)} style={styles.userCard}>
-      <Text style={styles.userName}>{item.name}</Text>
+      <Text style={styles.userName}>{item?.name}</Text>
 
       <View style={{ width: '40%', flexWrap: 'wrap' }}>
         <Text style={{ fontSize: 11, textAlign: 'center' }}>
@@ -119,7 +120,7 @@ const AdminHome = () => {
         <RefreshControl refreshing={refreshing} onRefresh={fetchUsers} />
       }
     >
-      <Text style={styles.title}>Hello, {user.name}</Text>
+      <Text style={styles.title}>Hello, {user?.name}</Text>
 
       <View style={styles.statsRow}>
         <View style={styles.card}>

@@ -7,18 +7,35 @@ const useAuthStore = create(
     (set) => ({
       user: null,
       token: null,
+      allUsers:null,
+      monthlyFees:null,
+      startsFrom:null,
 
       login: (userData, token) => {
         set({ user: userData, token: token });
       },
 
-      logout: () => {
-        set({ user: null, token: null });
+     logout: () => {
+      // await AsyncStorage.removeItem('auth-storage'); 
+  set(() => ({
+    user: null,
+    token: null,
+    allUsers: null,
+    monthlyFees:null,
+    startsFrom:null,
+  }));
+},
+      setAllUsers:(users)=>{
+        set({allUsers:users});
       },
+      setStore :(monthlyFees , startsFrom)=>{
+          set({monthlyFees:monthlyFees , startsFrom:startsFrom})
+      }
     }),
     {
       name: 'auth-storage', // Key in AsyncStorage
-      getStorage: () => AsyncStorage,
+      // getStorage: () => AsyncStorage,
+      storage: AsyncStorage,
     }
   )
 );

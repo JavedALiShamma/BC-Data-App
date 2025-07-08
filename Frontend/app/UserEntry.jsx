@@ -9,7 +9,8 @@ import {
   Alert,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import axios from 'axios';
 import useAuthStore from '../store/UserAuth';
@@ -26,6 +27,7 @@ const AddUserScreen = () => {
   const user = useAuthStore((state) => state.user);
  
   const superAdmin= user._id;
+  const [isLoading, setIsLoading] = useState(false);
     const navigation=useNavigation();
   const [form, setForm] = useState({
     name: '',
@@ -45,7 +47,7 @@ const AddUserScreen = () => {
     navigation.goBack();
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit =  () => {
   const { name, fatherName, address, mobile } = form;
 
   if (!name || !fatherName || !address || !mobile) {
@@ -57,8 +59,9 @@ const AddUserScreen = () => {
     Alert.alert('Invalid Mobile', 'Mobile number must be 10 digits.');
     return;
   }
-
+const ApiCall =async()=>{
   try {
+    setIsLoading(true);
     const response = await axios.post(`${APIURl}/registerUser`, {
       name,
       fatherName,
@@ -86,7 +89,12 @@ const AddUserScreen = () => {
     console.error(error);
     Alert.alert('Server Error', error.response?.data?.message || 'Could not connect to server.');
   }
+  setIsLoading(false);
+}
+  ApiCall();
+  
 };
+
 
   return (
     <>
@@ -130,7 +138,10 @@ const AddUserScreen = () => {
           />
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Submit</Text>
+            {
+              isLoading ?(<ActivityIndicator color="white"/> ) :<Text style={styles.buttonText}>Submit</Text>
+            }
+            
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

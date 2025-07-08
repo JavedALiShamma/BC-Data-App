@@ -19,7 +19,7 @@ import { useNavigation } from 'expo-router';
 const CreateAdminScreen = () => {
   const route=useRoute();
   const{id : IBSSuperAdmin}=route.params;
-  console.log("ID IS", IBSSuperAdmin);
+
   const navigation=useNavigation();
  
   const [form, setForm] = useState({
@@ -40,7 +40,7 @@ const CreateAdminScreen = () => {
   }
 
   const handleSubmit = async () => {
-    console.log(form,"Form is");
+    
     if (!form.name || !form.mobile || !form.password || !form.IBSSuperAdmin) {
       Alert.alert('Error', 'Please fill all required fields.');
       return;
