@@ -1,15 +1,13 @@
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform,ImageBackground } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import {Link, useNavigation} from "expo-router"
-import styles from "../../assets/styles/login.styles";
-import {Image} from "react-native"
-import COLORS from '../../constants/colors';
-import {Ionicons} from "@expo/vector-icons";
-import { useRouter } from 'expo-router';
+import { Ionicons } from "@expo/vector-icons";
 import axios from 'axios';
-import useAuthStore from '../../store/UserAuth';
-import ToastManager, { Toast } from 'toastify-react-native'
+import { useNavigation, useRouter } from "expo-router";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, ImageBackground, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import ToastManager, { Toast } from 'toastify-react-native';
+import styles from "../../assets/styles/login.styles";
 import { APIURl } from '../../constants/Api';
+import COLORS from '../../constants/colors';
+import useAuthStore from '../../store/UserAuth';
 // import useAuthStore from '../../store/UserAuth';
 function Login() {
   const [email,setEmail]=useState('');
@@ -21,15 +19,23 @@ function Login() {
   const router = useRouter();
   const navigation =useNavigation();
   useEffect(()=>{
-
-    if(user){
+    const checkAuth =async()=>{
+      // Wait until Zustand store is hydrated
+      while(!useAuthStore.persist.hasHydrated()){
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      const user = useAuthStore.getState().user;
+       if(user){
       if(user.role === 'superadmin'){
-            navigation.navigate("(tabs)")
+             router.replace("(tabs)");
            }
            else{
-             navigation.navigate("(adminTabs)");
+             router.replace("(adminTabs)");
            }
     }
+    };
+    checkAuth();
+   
   },[])
   const handleLogin=async ()=>{
     // I want to send it to the (tabs) page
@@ -65,7 +71,7 @@ function Login() {
           setError("Invalid email and password");
         }
       }).catch(function(err){
-        Toast.error("Invalid Email or password");
+        Toast.error("Server Down try again Later");
         console.log("error is",err)
       }).finally(()=>{
         setIsLoading(false)
@@ -86,14 +92,14 @@ function Login() {
     <View style={styles.container}>
     <View style={{width:"100%", height:"45%" ,backgroundColor:"white"}}>
       <ImageBackground
-      source={require("../../assets/images/SavingMoney2.png")}
+      source={require("../../assets/images/SavingMoney03.png")}
       resizeMode="contain"
       style={{width:"100%", height:"100%", position:"absolute"}}
 
       
       >
           <Image
-        source={require("../../assets/images/Assuffah.png")}
+        source={require("../../assets/images/AssuffahLogo.png")}
         resizeMode='contain'
         style={styles.illustrationImage}
         
@@ -179,7 +185,7 @@ function Login() {
         )}
 
       </TouchableOpacity>
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <Text style={styles.footerText}>Don't have an account</Text>
         <Link href="/signup" asChild>
         <TouchableOpacity>
@@ -190,7 +196,7 @@ function Login() {
         </TouchableOpacity>
         </Link>
 
-      </View>
+      </View> */}
       </View>
       </View>
 

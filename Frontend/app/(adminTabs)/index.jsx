@@ -1,19 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../constants/colors'; // Replace with your actual COLORS
-import useAuthStore from '../../store/UserAuth';
+import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
+import { useFocusEffect, useNavigation } from 'expo-router';
+import { useCallback, useState } from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { APIURl } from '../../constants/Api';
-import { useNavigation, useFocusEffect } from 'expo-router';
+import useAuthStore from '../../store/UserAuth';
 
 const AdminHome = () => {
   const [users, setUsers] = useState([]);
@@ -25,12 +24,17 @@ const AdminHome = () => {
   const user = useAuthStore((state) => state.user);
   const navigation = useNavigation();
   const setAllUsers =useAuthStore((state)=> state.setAllUsers);
+  const router =useRoute();
 
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
 
   const fetchUsers = async () => {
     try {
+      if(!token || !user) {
+        console.log('No token or user found');  
+        router.push('(auth)'); // Redirect to login if no token or user
+      }
       setRefreshing(true);
       const res = await axios.get(`${APIURl}/getUsersByAdmin/${user?._id}`, {
         headers: {

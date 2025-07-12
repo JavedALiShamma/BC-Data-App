@@ -1,6 +1,6 @@
 // FOREST
 const COLORS = {
-    primary: "#4CAF50",
+    primary: "#4D888E",
     textPrimary: "#2e5a2e",
     textSecondary: "#688f68",
     textDark: "#1b361b",

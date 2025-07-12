@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const useAuthStore = create(
@@ -36,6 +36,9 @@ const useAuthStore = create(
       name: 'auth-storage', // Key in AsyncStorage
       // getStorage: () => AsyncStorage,
       storage: AsyncStorage,
+        onRehydrateStorage: () => () => {
+        console.log('✅ Zustand store has hydrated');
+      },
     }
   )
 );

@@ -1,12 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, RefreshControl
-} from 'react-native';
-import useAuthStore from '../../store/UserAuth';
 import axios from 'axios';
-import { APIURl } from '../../constants/Api';
 import { useNavigation } from 'expo-router';
-import ToastManager, { Toast } from 'toastify-react-native'
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Alert,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text, TextInput, TouchableOpacity,
+  View
+} from 'react-native';
+import ToastManager from 'toastify-react-native';
+import { APIURl } from '../../constants/Api';
+import useAuthStore from '../../store/UserAuth';
 
 const SuperAdminProfileScreen = () => {
   const { user, setStore, logout } = useAuthStore();
@@ -144,12 +149,15 @@ const SuperAdminProfileScreen = () => {
 
       {storeDetails && (
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Store Created</Text>
+          <Text style={styles.cardTitle}>खाते का विवरण</Text>
           <Text>User ID: {storeDetails.userId}</Text>
           <Text>Starts From: {storeDetails.startsFrom}</Text>
           <Text>Monthly Fees: ₹{storeDetails.monthlyFees}</Text>
-          <Text>Collected: ₹{storeDetails.totalInstallmentsCollected}</Text>
-          <Text>Standing Balance: ₹{storeDetails.standingBalance}</Text>
+          <Text>Collected: ₹{storeDetails.standingBalance}</Text>
+          <View style={{position:"absolute", right: 10, top: 10 , zIndex: 1, backgroundColor: "white", padding: 5, borderRadius: 5}}>
+          <Text style={{fontSize : 16 , color : "green", fontWeight:600}}>कुल जमा: ₹{storeDetails.standingBalance}</Text>
+
+          </View>
           <Text>Prev Month Balance: ₹{storeDetails.balanceFromPreviousMonths}</Text>
         </View>
       )}
@@ -172,7 +180,7 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#2980b9', padding: 12, borderRadius: 8 },
   buttonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
   card: { marginTop: 20, padding: 15, borderWidth: 1, borderRadius: 10, backgroundColor: '#ecf0f1' },
-  cardTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 10, textAlign: "center", color: "blue" }
+  cardTitle: { fontSize: 25, fontWeight: 'bold', marginBottom: 10, textAlign: "start", color: "blue" }
 });
 
 export default SuperAdminProfileScreen;

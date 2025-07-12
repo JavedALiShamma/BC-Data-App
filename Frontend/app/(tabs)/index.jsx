@@ -1,19 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView
-} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import useAuthStore from '../../store/UserAuth';
-import { useNavigation } from 'expo-router';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 import axios from 'axios';
+import { useNavigation } from 'expo-router';
+import React, { useMemo, useState } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { APIURl } from '../../constants/Api';
-import { useFocusEffect } from '@react-navigation/native';
-
+import useAuthStore from '../../store/UserAuth';
 const SuperAdminHomeScreen = () => {
   const [totalAdmins, setTotalAdmins] = useState([]);
   const [totalUsers,setTotalUsers]=useState([]);
@@ -23,9 +22,12 @@ const SuperAdminHomeScreen = () => {
   const user = useAuthStore((state) => state.user);
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
-
+  const [store , setStore]=useState();
+  const router = useRoute();
   const superAdminName = `Welcome, ${user?.name}`;
   //// Here will try to fetch the data 
+  
+
   const totalCollection =()=>{
     let TOTALAMONT=0;
       totalUsers.forEach(user => {
@@ -46,9 +48,16 @@ const SuperAdminHomeScreen = () => {
     return async ()=>{
       try{
         // Here we need to set Loading true
-        const [res1, res2]= await Promise.all([
+        if(!token || !user) {
+          console.log('No token or user found');  
+          router.push('(auth)');
+          // Redirect to login if no token or user
+          return;
+        }
+        const [res1, res2 ]= await Promise.all([
           axios.get(`${APIURl}/getAllAdmins`,{headers}),
-          axios.get(`${APIURl}/getAllUsers`)
+          axios.get(`${APIURl}/getAllUsers`),
+          
         ]);
         // Here we will set Data
         const count = res1.data.users;
@@ -128,13 +137,13 @@ const SuperAdminHomeScreen = () => {
         </View>
 
         {/* Beneficiary Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>This Month’s Beneficiary</Text>
+       <TouchableOpacity onPress={()=>{navigation.navigate('Profile')}} style={styles.section}>
+          <Text style={styles.sectionTitle}>खाते में शेष</Text>
           <View style={styles.beneficiaryCard}>
-            <Text style={styles.beneficiaryName}>Mohd Aamir</Text>
-            <Text style={styles.beneficiaryStatus}>Status: Not Paid</Text>
+            <Text style={styles.beneficiaryName}>लाइव अपडेट प्राप्त करें </Text>
+            <Text style={styles.beneficiaryStatus}>अपना बैलेंस जानने के लिए यहां क्लिक करें</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Quick Actions */}
         <View style={styles.section}>
@@ -148,7 +157,7 @@ const SuperAdminHomeScreen = () => {
         </View>
 
         {/* Report Download */}
-        <TouchableOpacity style={styles.reportButton}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('Reports')}} style={styles.reportButton}>
           <Ionicons name="document-text-outline" size={22} color="#fff" />
           <Text style={styles.reportText}>मासिक रिपोर्ट देखें</Text>
         </TouchableOpacity>
