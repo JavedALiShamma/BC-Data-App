@@ -18,8 +18,9 @@ const SuperAdminHomeScreen = () => {
   const [totalUsers,setTotalUsers]=useState([]);
   const [currentMonthColl,setCurrentMonthColl]=useState(0);
   const navigation = useNavigation();
-  const token = useAuthStore((state) => state.token);
-  const user = useAuthStore((state) => state.user);
+  // const token = useAuthStore((state) => state.token);
+  // const user = useAuthStore((state) => state.user);
+  const {user , token} =useAuthStore();
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
   const currentYear = new Date().getFullYear();
   const [store , setStore]=useState();
@@ -50,7 +51,8 @@ const SuperAdminHomeScreen = () => {
         // Here we need to set Loading true
         if(!token || !user) {
           console.log('No token or user found');  
-          router.push('(auth)');
+          console.log("USER" , user);
+          navigation.replace('(auth)');
           // Redirect to login if no token or user
           return;
         }

@@ -33,7 +33,7 @@ const AdminHome = () => {
     try {
       if(!token || !user) {
         console.log('No token or user found');  
-        router.push('(auth)'); // Redirect to login if no token or user
+        navigation.replace('(auth)'); // Redirect to login if no token or user
       }
       setRefreshing(true);
       const res = await axios.get(`${APIURl}/getUsersByAdmin/${user?._id}`, {
@@ -41,7 +41,7 @@ const AdminHome = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      
       const allUser = res.data.users;
       setUsers(allUser);
       setAllUsers(allUser);
@@ -73,7 +73,7 @@ const AdminHome = () => {
   useFocusEffect(
     useCallback(() => {
       fetchUsers();
-    }, [user?._id, token])
+    }, [])
   );
 
   const handleSingleUser = (item) => {
@@ -90,13 +90,13 @@ const AdminHome = () => {
     if (payment) {
       return (
         <View style={[styles.statusBadge, { backgroundColor: 'green' }]}>
-          <Text style={styles.statusText}>Paid</Text>
+          <Text style={styles.statusText}>भुगतान हो गया</Text>
         </View>
       );
     } else {
       return (
         <View style={[styles.statusBadge, { backgroundColor: 'red' }]}>
-          <Text style={styles.statusText}>Unpaid</Text>
+          <Text style={styles.statusText}>भुगतान बाकी</Text>
         </View>
       );
     }

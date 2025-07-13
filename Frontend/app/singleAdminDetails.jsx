@@ -68,8 +68,8 @@ useEffect(() => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Ionicons style={{position:"absolute", left:10 , top: 10}} onPress={()=>{navigation .goBack()}} name='arrow-back' size={20}/>
-        <Text style={styles.label}>Select Month:</Text>
+        <Ionicons style={{position:"absolute", left:10 , top: 15}} onPress={()=>{navigation .goBack()}} name='arrow-back' size={25}/>
+        <Text style={styles.label}>महीना चुनिए:</Text>
         <Picker
           selectedValue={selectedMonth}
           onValueChange={(itemValue) => setSelectedMonth(itemValue)}
@@ -80,7 +80,7 @@ useEffect(() => {
           ))}
         </Picker>
 
-        <Text style={styles.label}>Select Year:</Text>
+        <Text style={styles.label}>वर्ष चुनें:</Text>
         <Picker
           selectedValue={selectedYear}
           onValueChange={(itemValue) => setSelectedYear(itemValue)}
@@ -105,14 +105,15 @@ useEffect(() => {
           </View>
           {isDisplay === 'monthlyPayment' ? (
             <FlatList
-              data={allUsers.filter(user =>
-                Array.isArray(user.payments) &&
-                user.payments.some(payment =>
-                  payment.status === "Paid" &&
-                  payment.month === selectedMonth &&
-                  payment.year === Number(selectedYear)
-                )
-              )}
+              // data={allUsers.filter(user =>
+              //   Array.isArray(user.payments) &&
+              //   user.payments.some(payment =>
+              //     payment.status === "Paid"  && 
+              //     payment.month === selectedMonth &&
+              //     payment.year === Number(selectedYear)
+              //   )
+              // )}
+              data={allUsers}
               keyExtractor={item => item._id}
               style={{ flex: 1, marginTop: 10, padding: 2 }}
               renderItem={({ item }) => {
@@ -126,7 +127,7 @@ useEffect(() => {
                     <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
                     <Text>Phone: {item.mobile}</Text>
                     <Text>
-                      Paid Amount: {payment?.amount || 'N/A'}
+                      Paid Amount: {payment?.amount || '0'}
                     </Text>
                     <View style={{
                       alignSelf: 'flex-start',
@@ -190,6 +191,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginTop: 16,
+    textAlign:'center'
   },
   picker: {
     backgroundColor: '#eee',

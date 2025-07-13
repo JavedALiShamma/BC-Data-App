@@ -10,34 +10,43 @@ import COLORS from '../../constants/colors';
 import useAuthStore from '../../store/UserAuth';
 // import useAuthStore from '../../store/UserAuth';
 function Login() {
+
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [isLoading,setIsLoading]=useState(false);
   const [isError,setError]=useState(null);
-  const user = useAuthStore((state) => state.user);
+  // const user = useAuthStore((state) => state.user);
+  const {checkAuth , token , user ,login} =useAuthStore();
   const router = useRouter();
   const navigation =useNavigation();
+
   useEffect(()=>{
-    const checkAuth =async()=>{
-      // Wait until Zustand store is hydrated
-      while(!useAuthStore.persist.hasHydrated()){
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-      const user = useAuthStore.getState().user;
-      console.log("user is",user);
-       if(user){
-      if(user.role === 'superadmin'){
-             router.replace("/(tabs)");
-           }
-           else{
-             router.replace("/(adminTabs)");
-           }
-    }
-    };
-    checkAuth();
    
+    console.log("user", user);
+    console.log("token", token);
+    checkAuth();
+    // const redirectPage =()=>{
+    //   if(user){
+    //     if(user?.role === 'superadmin'){
+    //      navigation.navigate("(tabs)")
+    //     }
+    //     else if(user?.role == 'admin'){
+    //       navigation.navigate("(adminTabs)");
+    //     }
+    //   }
+    // }
+    // redirectPage();
   },[])
+    useEffect(() => {
+    if (user) {
+      if (user?.role === 'superadmin') {
+        navigation.navigate("(tabs)");
+      } else if (user.role === 'admin') {
+        navigation?.navigate("(adminTabs)");
+      }
+    }
+  }, [user]);
   const handleLogin=async ()=>{
     // I want to send it to the (tabs) page
  
@@ -57,8 +66,13 @@ function Login() {
         if(res.status==200){
           
           const{user, token}=res.data;
-          console.log(res.data);
-          useAuthStore.getState().login(user,token);
+        
+          ////
+          //
+
+          login(user,token);
+       
+          // useAuthStore.getState().login(user,token);
            Toast.success('Login sucessfull');
            if(user.role === 'superadmin'){
             navigation.navigate("(tabs)")

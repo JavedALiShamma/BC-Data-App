@@ -28,7 +28,7 @@ const Loan = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchLoaners = useCallback(async () => {
-    const userWithLoan = allUsers.filter(
+    const userWithLoan = allUsers?.filter(
       (u) => u.hasLoan === true && u.activeLoanId != null
     );
     const userIds = userWithLoan.map((user) => user._id);
@@ -50,10 +50,10 @@ const Loan = () => {
 
   useEffect(() => {
     fetchLoaners();
-  }, [fetchLoaners]);
+  }, []);
 
   useEffect(() => {
-    console.log("LOANERS are" , loaners);
+   
     const result = loaners.filter((loan) => {
       const paid = loan.installmentsPaid || [];
       const hasPaid = paid.some(

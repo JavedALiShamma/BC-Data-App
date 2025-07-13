@@ -2,29 +2,43 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const useAuthStore = create(
-  persist(
-    (set) => ({
+const useAuthStore = create((set) => ({
       user: null,
       token: null,
       allUsers:null,
       monthlyFees:null,
       startsFrom:null,
 
-      login: (userData, token) => {
+      login: async(userData, token) => {
+        await AsyncStorage.setItem('user', JSON.stringify(userData));
+        await AsyncStorage.setItem('token', token);
         set({ user: userData, token: token });
-      },
 
-     logout: () => {
+      },
+      checkAuth : async () =>{
+        try{
+          const token = await AsyncStorage.getItem('token');
+          const userJson = await AsyncStorage.getItem('user');
+          const user = userJson ? JSON.parse(userJson) : null;
+          set({ user: user, token: token });
+        }
+        catch(err){
+          console.error("Error checking auth:", err);
+        }
+      },
+     logout: async() => {
       // await AsyncStorage.removeItem('auth-storage'); 
-  set(() => ({
-    user: null,
-    token: null,
-    allUsers: null,
-    monthlyFees:null,
-    startsFrom:null,
-  }));
-},
+      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('token');
+      set(() => ({
+        user: null,
+        token: null,
+        allUsers: null,
+        monthlyFees:null,
+        startsFrom:null,
+      }));
+
+    },
       setAllUsers:(users)=>{
         set({allUsers:users});
       },
@@ -32,15 +46,8 @@ const useAuthStore = create(
           set({monthlyFees:monthlyFees , startsFrom:startsFrom})
       }
     }),
-    {
-      name: 'auth-storage', // Key in AsyncStorage
-      // getStorage: () => AsyncStorage,
-      storage: AsyncStorage,
-        onRehydrateStorage: () => () => {
-        console.log('✅ Zustand store has hydrated');
-      },
-    }
-  )
+   
+  
 );
 
 export default useAuthStore;
