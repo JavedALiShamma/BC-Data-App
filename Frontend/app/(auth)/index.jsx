@@ -25,12 +25,13 @@ function Login() {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       const user = useAuthStore.getState().user;
+      console.log("user is",user);
        if(user){
       if(user.role === 'superadmin'){
-             router.replace("(tabs)");
+             router.replace("/(tabs)");
            }
            else{
-             router.replace("(adminTabs)");
+             router.replace("/(adminTabs)");
            }
     }
     };
